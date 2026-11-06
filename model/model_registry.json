@@ -1,0 +1,127 @@
+{
+  "dataset": "Telco Customer Churn",
+  "target": "Churn",
+  "positive_label": "Yes",
+  "feature_names": [
+    "gender",
+    "SeniorCitizen",
+    "Partner",
+    "Dependents",
+    "tenure",
+    "PhoneService",
+    "MultipleLines",
+    "InternetService",
+    "OnlineSecurity",
+    "OnlineBackup",
+    "DeviceProtection",
+    "TechSupport",
+    "StreamingTV",
+    "StreamingMovies",
+    "Contract",
+    "PaperlessBilling",
+    "PaymentMethod",
+    "MonthlyCharges",
+    "TotalCharges"
+  ],
+  "classes": [
+    "No",
+    "Yes"
+  ],
+  "n_train": 5608,
+  "n_test": 1402,
+  "random_state": 42,
+  "averaging": "binary (positive class = Yes)",
+  "models": {
+    "logistic_regression": {
+      "display_name": "Logistic Regression",
+      "file": "logistic_regression.joblib",
+      "best_params": {
+        "C": "10.0",
+        "class_weight": "balanced"
+      },
+      "cv_f1": 0.6316,
+      "fit_seconds": 13.7,
+      "metrics": {
+        "Accuracy": 0.7425,
+        "AUC": 0.8467,
+        "Precision": 0.5088,
+        "Recall": 0.7763,
+        "F1": 0.6147,
+        "MCC": 0.4555
+      }
+    },
+    "decision_tree": {
+      "display_name": "Decision Tree",
+      "file": "decision_tree.joblib",
+      "best_params": {
+        "class_weight": "balanced",
+        "max_depth": "5",
+        "min_samples_leaf": "20"
+      },
+      "cv_f1": 0.6217,
+      "fit_seconds": 2.8,
+      "metrics": {
+        "Accuracy": 0.7582,
+        "AUC": 0.8312,
+        "Precision": 0.5309,
+        "Recall": 0.7412,
+        "F1": 0.6187,
+        "MCC": 0.462
+      }
+    },
+    "knn": {
+      "display_name": "kNN",
+      "file": "knn.joblib",
+      "best_params": {
+        "n_neighbors": "31",
+        "weights": "uniform"
+      },
+      "cv_f1": 0.6042,
+      "fit_seconds": 1.7,
+      "metrics": {
+        "Accuracy": 0.7939,
+        "AUC": 0.8361,
+        "Precision": 0.6228,
+        "Recall": 0.5606,
+        "F1": 0.5901,
+        "MCC": 0.454
+      }
+    },
+    "naive_bayes": {
+      "display_name": "Naive Bayes",
+      "file": "naive_bayes.joblib",
+      "best_params": {
+        "var_smoothing": "1e-09"
+      },
+      "cv_f1": 0.5938,
+      "fit_seconds": 0.6,
+      "metrics": {
+        "Accuracy": 0.7019,
+        "AUC": 0.8138,
+        "Precision": 0.4648,
+        "Recall": 0.8356,
+        "F1": 0.5973,
+        "MCC": 0.4322
+      }
+    },
+    "svm": {
+      "display_name": "Support Vector Machine",
+      "file": "svm.joblib",
+      "best_params": {
+        "C": "1.0",
+        "class_weight": "balanced"
+      },
+      "cv_f1": 0.6247,
+      "fit_seconds": 30.9,
+      "metrics": {
+        "Accuracy": 0.7525,
+        "AUC": 0.8215,
+        "Precision": 0.522,
+        "Recall": 0.7682,
+        "F1": 0.6216,
+        "MCC": 0.4659
+      }
+    }
+  },
+  "winner": "Support Vector Machine"
+}

@@ -1,0 +1,9 @@
+# Pinned so that the joblib pipelines in model/ unpickle with the exact
+# scikit-learn version they were trained with.
+streamlit==1.66.1
+scikit-learn==1.9.1
+pandas==3.1.0
+numpy==2.5.2
+matplotlib==3.11.1
+seaborn==0.13.2
+joblib==1.6.0
