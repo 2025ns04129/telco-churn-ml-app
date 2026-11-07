@@ -213,13 +213,6 @@ reproduce exactly.
    `pip install` — the most common cause of deployment failure. A `.python-version` file is
    included to request 3.12 automatically.
 
-## BITS Virtual Lab execution
-
-`model/telco_churn_training.ipynb` reproduces the entire workflow end-to-end — EDA, the five
-tuned pipelines, the comparison table and the confusion matrix — and is the version to run on
-the **BITS Virtual Lab**. Run all cells and capture one screenshot of the comparison-table
-output with the Virtual Lab chrome visible.
-
 ## References
 
 1. Telco Customer Churn dataset — IBM Cognos Analytics sample data / Kaggle
