@@ -122,13 +122,13 @@ All five pipelines were tuned with **5-fold cross-validation**, scored by **F1 o
 class**. `class_weight="balanced"` was offered to the three models that support it, because
 the data is imbalanced and recall on churners is what a retention campaign cares about.
 
-| Model | Contact session | Tuned hyper-parameters | CV churn-F1 |
-|---|---|---|---|
-| Logistic Regression | 4 & 5 | `C=10.0`, `class_weight=balanced` | 0.6316 |
-| Decision Tree (entropy) | 6 | `max_depth=5`, `min_samples_leaf=20`, `class_weight=balanced` | 0.6217 |
-| k-Nearest Neighbour | 7 | `n_neighbors=31`, `weights=uniform` | 0.6042 |
-| Gaussian Naive Bayes | 11 | `var_smoothing=1e-9` | 0.5938 |
-| Support Vector Machine (RBF) | 9 | `C=1.0`, `class_weight=balanced` | 0.6247 |
+| Model | Tuned hyper-parameters | CV churn-F1 |
+|---|---|---|
+| Logistic Regression | `C=10.0`, `class_weight=balanced` | 0.6316 |
+| Decision Tree (entropy) | `max_depth=5`, `min_samples_leaf=20`, `class_weight=balanced` | 0.6217 |
+| k-Nearest Neighbour | `n_neighbors=31`, `weights=uniform` | 0.6042 |
+| Gaussian Naive Bayes | `var_smoothing=1e-9` | 0.5938 |
+| Support Vector Machine (RBF) | `C=1.0`, `class_weight=balanced` | 0.6247 |
 
 ### Comparison table (hold-out test set, n = 1,402)
 
