@@ -6,11 +6,11 @@ the Telco Customer Churn training split, evaluate them on the untouched hold-out
 test split and persist everything the Streamlit app needs.
 
 Models (all from the course syllabus)
-    1. Logistic Regression          - Contact Sessions 4 & 5
-    2. Decision Tree Classifier     - Contact Session 6 (entropy / information gain)
-    3. k-Nearest Neighbour          - Contact Session 7 (instance based learning)
-    4. Gaussian Naive Bayes         - Contact Session 11 (probabilistic generative)
-    5. Support Vector Machine       - Contact Session 9 (RBF kernel trick)
+    1. Logistic Regression
+    2. Decision Tree Classifier     (entropy / information gain)
+    3. k-Nearest Neighbour          (instance based learning)
+    4. Gaussian Naive Bayes         (probabilistic generative)
+    5. Support Vector Machine       (RBF kernel trick)
 
 Every model is wrapped in a Pipeline whose first stage is a ColumnTransformer
 that standardises the three numeric features and one-hot encodes the sixteen
