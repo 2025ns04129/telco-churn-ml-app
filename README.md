@@ -135,7 +135,7 @@ the data is imbalanced and recall on churners is what a retention campaign cares
 Metrics are reported on the **churn (`Yes`) class**; AUC is the ROC AUC on the churn
 probability. **Best in each column is bold.**
 
-| Model | Accuracy | AUC | Precision | Recall | F1 | MCC |
+| ML Model Name | Accuracy | AUC | Precision | Recall | F1 | MCC |
 |---|---|---|---|---|---|---|
 | Logistic Regression | 0.7425 | **0.8467** | 0.5088 | 0.7763 | 0.6147 | 0.4555 |
 | Decision Tree | 0.7582 | 0.8312 | 0.5309 | 0.7412 | 0.6187 | 0.4620 |
@@ -164,14 +164,22 @@ for finding the customers who actually leave. **F1, AUC and MCC** are the honest
 
 ## Observations
 
-| # | Observation | Evidence |
-|---|---|---|
-| 1 | **Contract type is the strongest churn driver.** | Month-to-month customers churn at **42.6%**, one-year at 11.3%, two-year at just **2.8%**. |
-| 2 | **Fiber-optic internet customers churn far more** than DSL or no-internet. | Fiber optic **41.8%** vs DSL 18.9% vs no internet 7.2%. |
-| 3 | **Electronic-check payers are the highest-risk billing segment.** | Electronic check **45.1%** churn vs ~15–19% for automatic / mailed methods. |
-| 4 | **Short tenure predicts churn; long tenure protects against it.** | `tenure` has the strongest numeric correlation with churn (**−0.35**); new customers leave most. |
-| 5 | **Lack of add-on services (tech support, online security) raises churn.** | No tech support → **41.5%** churn vs 15.2% for customers who have it. |
-| 6 | **The models cluster in a narrow band** (AUC 0.81–0.85), typical for this well-studied dataset; the decision between them is a recall-vs-precision trade-off, not a clear accuracy winner. | See comparison table. |
+| ML Model Name | Observation about model performance |
+|---|---|
+| Logistic Regression | Best **AUC (0.8467)** of all five — ranks customers by churn risk most reliably. Good recall (0.7763) under balanced class weights; a fast, interpretable linear baseline that lands just behind the SVM on F1 (0.6147). |
+| Decision Tree | Second-best **F1 (0.6187)** and **MCC (0.4620)**. A shallow tree (`max_depth=5`) avoids over-fitting and stays fully interpretable as yes/no rules; competitive recall (0.7412) but the weakest-but-one risk ranking (AUC 0.8312). |
+| kNN | Highest **accuracy (0.7939)** and **precision (0.6228)** — raises the fewest false alarms — but the **lowest recall (0.5606)**, so it misses the most churners. Cautious and majority-leaning; being instance-based, its saved model is the largest. |
+| Naive Bayes | Highest **recall (0.8356)** — flags almost every churner — but the **lowest accuracy (0.7019) and precision (0.4648)**, i.e. many false alarms. Its feature-independence assumption is unrealistic for the correlated billing features, capping overall quality (MCC 0.4322). |
+| Support Vector Machine | Best **F1 (0.6216)** and **MCC (0.4659)** — the best balance between catching churners (recall 0.7682) and avoiding false alarms (precision 0.5220) on this imbalanced data. Slowest to train, but the strongest single all-round performer. |
+| **Overall, Winner for your dataset?** | **Support Vector Machine (RBF).** It tops the two metrics that best summarise balanced performance on an imbalanced target — **F1 and MCC** — while catching 285 of 371 churners. Logistic Regression is the recommended lightweight alternative: best AUC and nearly identical F1 at a fraction of the training cost. |
+
+### Additional dataset insights (from EDA)
+
+- **Contract type** is the strongest churn driver: month-to-month **42.6%** vs two-year **2.8%**.
+- **Fiber-optic** customers churn far more (**41.8%**) than DSL (18.9%) or no internet (7.2%).
+- **Electronic-check** payers are the highest-risk billing segment (**45.1%** vs 15–19% for automatic / mailed methods).
+- **Short tenure** predicts churn — the strongest numeric correlation with churn (**−0.35**).
+- **Lack of tech support / add-on services** raises churn (**41.5%** vs 15.2% for customers who have tech support).
 
 ## How the app meets the Section-4 requirements
 
@@ -212,6 +220,13 @@ reproduce exactly.
    `numpy==2.5.2` requires Python ≥ 3.12, so on an older interpreter the build fails at
    `pip install` — the most common cause of deployment failure. A `.python-version` file is
    included to request 3.12 automatically.
+
+## BITS Virtual Lab execution
+
+`model/telco_churn_training.ipynb` reproduces the entire workflow end-to-end — EDA, the five
+tuned pipelines, the comparison table and the confusion matrix — and is the version to run on
+the **BITS Virtual Lab**. Run all cells and capture one screenshot of the comparison-table
+output with the Virtual Lab chrome visible.
 
 ## References
 

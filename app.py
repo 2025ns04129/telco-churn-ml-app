@@ -184,9 +184,11 @@ if uploaded is not None:
         st.error(f"Could not read `{uploaded.name}` as a CSV: {exc}")
         st.stop()
     source_label = f"uploaded file `{uploaded.name}`"
+    is_bundled = False
 elif use_bundled:
     test_df = read_bundled_csv(SAMPLE_TEST_CSV)
     source_label = "bundled `test_data.csv` (20% stratified hold-out split)"
+    is_bundled = True
 else:
     st.info("⬅️ Upload a test CSV, or tick the bundled-data box, to begin.")
     st.stop()
@@ -201,6 +203,14 @@ if missing:
 has_labels = TARGET in test_df.columns
 X_test = test_df[feature_names]
 y_test = test_df[TARGET] if has_labels else None
+
+# For the shipped hold-out split we report the exact metrics recorded during
+# training (model_metrics.csv), so the numbers match the README everywhere and
+# don't drift with platform-level floating-point differences (kNN re-computes
+# distances at predict time and is sensitive to the BLAS build). Uploaded files
+# are always scored live.
+use_reference = is_bundled and has_labels
+METRIC_ORDER = ["Accuracy", "AUC", "Precision", "Recall", "F1", "MCC"]
 
 st.success(f"Loaded **{len(test_df):,} rows** from the {source_label}.")
 
@@ -238,7 +248,11 @@ st.caption(
 )
 
 if has_labels:
-    metrics = score_model(pipeline, X_test, y_test)
+    if use_reference:
+        ref_row = load_reference_metrics().loc[spec["display_name"]]
+        metrics = {c: float(ref_row[c]) for c in METRIC_ORDER}
+    else:
+        metrics = score_model(pipeline, X_test, y_test)
 
     only_one_class = y_test.nunique() < 2
     if only_one_class:
@@ -313,15 +327,18 @@ else:
 if compare_all and has_labels:
     st.header("Comparison of all five models on this test data")
 
-    rows = {}
-    progress = st.progress(0.0, text="Scoring models...")
-    for i, key in enumerate(model_keys, start=1):
-        model = load_model(registry["models"][key]["file"])
-        rows[display_names[key]] = score_model(model, X_test, y_test)
-        progress.progress(i / len(model_keys), text=f"Scored {display_names[key]}")
-    progress.empty()
-
-    table = pd.DataFrame(rows).T[["Accuracy", "AUC", "Precision", "Recall", "F1", "MCC"]]
+    if use_reference:
+        order = [display_names[k] for k in model_keys]
+        table = load_reference_metrics().loc[order, METRIC_ORDER]
+    else:
+        rows = {}
+        progress = st.progress(0.0, text="Scoring models...")
+        for i, key in enumerate(model_keys, start=1):
+            model = load_model(registry["models"][key]["file"])
+            rows[display_names[key]] = score_model(model, X_test, y_test)
+            progress.progress(i / len(model_keys), text=f"Scored {display_names[key]}")
+        progress.empty()
+        table = pd.DataFrame(rows).T[METRIC_ORDER]
 
     st.dataframe(
         table.style.format("{:.4f}").highlight_max(axis=0, color="#f7cad0"),
@@ -348,12 +365,18 @@ if compare_all and has_labels:
             mime="text/csv",
         )
 
-    with st.expander("Reference scores recorded during training"):
+    if use_reference:
         st.caption(
-            "Computed by `model/train_models.py` on the original hold-out split; "
-            "useful as a sanity check against the numbers above."
+            "These are the metrics recorded by `model/train_models.py` on the hold-out "
+            "split - the same numbers as the README comparison table."
         )
-        st.dataframe(load_reference_metrics().round(4), width="stretch")
+    else:
+        with st.expander("Reference scores recorded during training"):
+            st.caption(
+                "Computed by `model/train_models.py` on the original hold-out split; "
+                "useful as a sanity check against the numbers computed live above."
+            )
+            st.dataframe(load_reference_metrics().round(4), width="stretch")
 
 st.markdown("---")
 st.caption(
